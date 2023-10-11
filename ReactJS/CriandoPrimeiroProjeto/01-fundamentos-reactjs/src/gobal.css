@@ -1,0 +1,33 @@
+/* Definindo algumas variaveis CSS que são as cores que vamos utilizar na aplicação */
+:root {
+  --white: #fff;
+  --grey-100: #e1e1e6;
+  --grey-300: #c4c4cc;
+  --grey-400: #8d8d99;
+  --grey-600: #323238;
+  --grey-700: #29292e;
+  --grey-800: #202024;
+  --grey-900: #121214;
+
+  --green-500: #00875f;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background: var(--grey-900);
+  color: var(--grey-300);
+  -webkit-font-smoothing: antialiased; /*aplica nos navegadores baseados com webkit uma padronização de fonte mais detalhada praticamente quando não usamos fontes padrão do sistema*/
+  /*nesse caso estamos importando do google a Font ROBOto*/
+}
+
+body, input, textarea, button { /*por padrão esses elemtnso não herdam o padrão de font do body, eles tem seu proprio padrão de fontes*/
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 1rem;/*uma unidade relativa do tamanho de fonte padrão do HTML que já é 16px e vai se adequar conforme o tamanho da fonte que o usuario por no seu dispositivo*/
+}
