@@ -2,7 +2,7 @@
   background-color: var(--grey-800);
   display: flex; /*centralizando*/
   justify-content: center;/*centralizando*/
-  padding: 1.25rem 0;/*0.25 = 4 px*/
+  padding: 1.25rem 0;/*0.25 = 4 px  Distanciando o topo e a parte inferior*/
 }
 
 .header img{ 

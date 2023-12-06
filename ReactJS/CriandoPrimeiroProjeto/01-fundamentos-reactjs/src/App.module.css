@@ -1,0 +1,12 @@
+.wrapper{
+  /* Como a div é displayBLOCK sempre vai ter 100% de largura, então n uso WIDTH */
+  max-width: 70rem; /*1120px*/
+  margin: 2rem auto;/*fazendo centralizar na tela*/
+  padding: 0 1rem;/*Se eu diminuir a tela menos que 70rem o conteudo n fique colado nas laterais*/
+
+  display: grid;
+  grid-template-columns: 256px 1fr; /*fr é a unidade que usamos no displayGRID para dizer
+  que algo tem tamanho flexivel, nesse caso a segunda parte do layout*/
+  gap: 2rem;/*espaçamento entre as colunas*/
+  align-items: flex-start;/*sempre fique alinhado pelo topo, o padrão é tentar esticar os dois para ter o mesmo tamanho*/
+}
