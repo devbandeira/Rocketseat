@@ -19,6 +19,35 @@
   display: flex;
   flex-direction: column; /*para o nome fica abaixo do cargo*/
   align-items: center;
+
+  margin-top: calc(0px - 1.5rem - 6px);/*jogando a img AVATAR para cima. Ou seja movendo a DIV className={styles.profile}*/
+/*se eu deixar somente calc(1.5rem - 6px) ele vai reduzir margem do topo, mas eu quero que ele volte (VA pra cima)
+então uso  0px - O VALOR QUE VOU CALCULAR. 1.5rem devido metade do 3re do width do avatar e 6 px tbm pela metade*/
+}
+
+.avatar{
+  /*box-sizing: initial;*/ /*para resolver o problema apos por as bordas e img diminuir*/
+  /*diferente o box-sizing: border-box definido para todos elementos
+  o INITAL faz quando eu add border, outline, padding, margin no elemento. Isso ocupa um espaço a mais e não esprema o elemento para caber ali*/
+  
+  /*temos também a forma de resolver fazendo calculo. Botanndo no width e heigth por exemplo mais o valor que usei de borda, outline ou outro elemento*/
+  width: calc(3rem + 12px);
+  height: calc(3rem + 12px);
+  border-radius: 8px;/*dificilmente uso rem para arredondar*/
+  border: 4px solid var(--gray-800);/*vai fazer que ela tenha uma borda cinza*/
+  outline: 2px solid var(--green-500);/*borda verde*/
+}
+
+.profile strong {
+  margin-top: 1rem;
+  color: var(--gray-100);
+  line-height: 1.6;
+}
+
+.profile span {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+  line-height: 1.6;
 }
 
 .sidebar footer{
@@ -42,4 +71,12 @@
   display: flex;
   align-items: center;
   justify-content: center ;
+
+  gap: 0.5rem;/*separar o icone e o texto, como ja usei o display:flex*/
+  transition: color 0.1s, background-color 0.1s;
+}
+
+.sidebar footer a:hover{
+  background: var(--green-500);
+  color: var(--white);
 }

@@ -1,13 +1,13 @@
 /* Definindo algumas variaveis CSS que são as cores que vamos utilizar na aplicação */
 :root {
   --white: #fff;
-  --grey-100: #e1e1e6;
-  --grey-300: #c4c4cc;
-  --grey-400: #8d8d99;
-  --grey-600: #323238;
-  --grey-700: #29292e;
-  --grey-800: #202024;
-  --grey-900: #121214;
+  --gray-100: #e1e1e6;
+  --gray-300: #c4c4cc;
+  --gray-400: #8d8d99;
+  --gray-600: #323238;
+  --gray-700: #29292e;
+  --gray-800: #202024;
+  --gray-900: #121214;
 
   --green-500: #00875f;
 }
@@ -20,8 +20,8 @@
 }
 
 body{
-  background: var(--grey-900);
-  color: var(--grey-300);
+  background: var(--gray-900);
+  color: var(--gray-300);
   -webkit-font-smoothing: antialiased; /*aplica nos navegadores baseados com webkit uma padronização de fonte mais detalhada praticamente quando não usamos fontes padrão do sistema*/
   /*nesse caso estamos importando do google a Font ROBOto*/
 }
