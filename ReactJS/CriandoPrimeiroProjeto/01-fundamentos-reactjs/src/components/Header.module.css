@@ -7,4 +7,6 @@
 
 .header img{ 
   height: 2rem; /*32px*/
+  margin: 0 0.4rem 0 0 ;
+  height: 1.6rem;
 }

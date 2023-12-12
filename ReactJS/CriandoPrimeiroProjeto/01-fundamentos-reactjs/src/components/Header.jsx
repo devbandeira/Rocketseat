@@ -5,8 +5,8 @@ import igniteLogo from '../assets/ignite-logo.svg';/*todas imgs importadas diret
 export function Header (){
   return (
     <header className={style.header}>
-    <strong> Alexander Bandeira</strong>
     <img src={igniteLogo} alt="Logotipo do Ignite" />
+    <strong> Ignite Feed</strong>
     </header>
   )
 }
