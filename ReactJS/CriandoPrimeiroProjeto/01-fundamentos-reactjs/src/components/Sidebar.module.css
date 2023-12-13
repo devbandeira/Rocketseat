@@ -25,19 +25,6 @@
 então uso  0px - O VALOR QUE VOU CALCULAR. 1.5rem devido metade do 3re do width do avatar e 6 px tbm pela metade*/
 }
 
-.avatar{
-  /*box-sizing: initial;*/ /*para resolver o problema apos por as bordas e img diminuir*/
-  /*diferente o box-sizing: border-box definido para todos elementos
-  o INITAL faz quando eu add border, outline, padding, margin no elemento. Isso ocupa um espaço a mais e não esprema o elemento para caber ali*/
-  
-  /*temos também a forma de resolver fazendo calculo. Botanndo no width e heigth por exemplo mais o valor que usei de borda, outline ou outro elemento*/
-  width: calc(3rem + 12px);
-  height: calc(3rem + 12px);
-  border-radius: 8px;/*dificilmente uso rem para arredondar*/
-  border: 4px solid var(--gray-800);/*vai fazer que ela tenha uma borda cinza*/
-  outline: 2px solid var(--green-500);/*borda verde*/
-}
-
 .profile strong {
   margin-top: 1rem;
   color: var(--gray-100);
