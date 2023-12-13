@@ -84,3 +84,72 @@ ou fazer o que fiz anaixo
   color: var(--gray-400);
   line-height: 1.6;
 }
+
+/* Nossa área de comentário */
+
+.commentForm {
+  width: 100%;
+  margin: 1.5rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--gray-600);
+}
+
+/*escondendo o botao*/
+.commentForm footer {
+  visibility: hidden;
+  max-width: 0;
+}
+
+/*diferente do focus do css. focus-within -> Ele dizer que se houver qualquer foco
+no input ou textarea ou qualquer elemento dentro do commentForm eu quero aplicar 
+alguma estilização em algum componente nesse ocntainer*/
+.commentForm:focus-within footer{
+  visibility: visible;
+  max-height: none;
+}
+
+.commentForm > strong{
+  line-height: 1.6;
+  color: var(--gray-100);
+}
+
+.commentForm textarea {
+  width: 100%;
+  background: var(--gray-900);
+  border: 0;
+  resize: none;
+  height: 6rem;
+  padding: 1rem;
+  border-radius: 8px;
+  color: var(--gray-100);
+  line-height: 1.4rem;
+  margin-top: 1rem;
+
+}
+
+.commentForm button[type=submit] {
+  padding: 1rem 1.5rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  border: 0;
+  background: var(--green-500);
+  color: var(--withe);
+  cursor: pointer;
+
+  transition: background-color 0.1s;
+
+  /* desaparecendo com o botão */
+  /*visibility: hidden;
+  max-height: 0;
+  display: none;*/
+
+  /* ------Aqui ele desaparece, mas continua ocupando espaço
+  vou entao no Post.jsx e envoltar o btn com um footer e aplicar
+  essas propriedades css nela------- */
+
+
+}
+
+.commentForm button[type=submit]:hover {
+  background: var(--green-300);
+}

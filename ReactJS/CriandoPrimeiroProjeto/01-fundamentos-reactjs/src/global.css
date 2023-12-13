@@ -13,7 +13,11 @@
   --green-300: #00875f;
 }
 
-
+/* Sobrescrevendo meu FOCUS do CSS para todas as "seleçoes no meu app" */
+:focus{
+  outline: transparent;/*tirando o focus padrao BORDA BRANCA*/
+  box-shadow: 0 0 0 2px var(--green-500);
+}
 * {
   margin: 0;
   padding: 0;

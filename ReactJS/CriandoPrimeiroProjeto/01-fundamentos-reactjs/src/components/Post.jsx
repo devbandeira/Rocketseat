@@ -25,6 +25,18 @@ export function Post() {
         <a href=""> #hastag2</a>{' '}
         <a href=""> #hastag3</a></p>{' '}
       </div>
+
+      {/*Construção da parte de comentário */}
+      <form className={styles.commentForm}>
+        <strong>Deixe seu feedback</strong>
+
+        <textarea placeholder='Deixe um comentário' 
+        />
+
+        <footer>
+        <button type='submit'>Publicar</button>
+        </footer>
+      </form>
     </article>
   )
 }
