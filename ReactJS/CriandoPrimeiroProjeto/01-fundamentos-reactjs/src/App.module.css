@@ -10,3 +10,20 @@
   gap: 2rem;/*espaçamento entre as colunas*/
   align-items: flex-start;/*sempre fique alinhado pelo topo, o padrão é tentar esticar os dois para ter o mesmo tamanho*/
 }
+
+/*Quando a tela for menor que 768px*/
+@media (max-width: 768px) {
+
+  html{/*REM da esse poder extremo*/
+    font-size: 87.5%; /*exemplo hipotetico para diminuir a fonte quando ir pro mobile. Apenas para ilustrar o uso do REM*/
+    /*não posso usar valor em pixel no fonte-size, tem que ser em porcentagem
+    se não para de funcionar a ideia do usuário dimensionar o seu dispositivo sozinho.
+    Pixel é bruto o usuario n consegue dimensionar. Então faremos uma regra de 3.
+    16 -> 100%
+    14 -> x    = 87,5%
+    */
+  }
+  .wrapper{/*pegando o wrapper anterior*/
+    grid-template-columns: 1fr;/*Ocupando apenas uma coluna que ocupa tudo*/
+  }
+}
