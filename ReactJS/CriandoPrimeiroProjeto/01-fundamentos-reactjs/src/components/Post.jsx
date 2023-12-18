@@ -1,35 +1,61 @@
+import { format, formatDistanceToNow } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
+
 import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
 import styles from "./Post.module.css";
 
-export function Post() {
+//Quais infos variam de um post para o outro
+// author: {avatar_url: "", name: "", role: ""}
+// publishedAt: Date
+// content: String
+
+//Pondo src={} entre chaves pq é uma variavel JS
+//para não ter que ficar escrevendo toda hora props.author, props., props. faço desestruturação do que vou usar apenas
+export function Post({ author, publishAt, content }) {
+  console.log(publishAt + "   destruido");
+
+  const publishedDateFormatted = format(
+    publishAt,
+    "d 'de' LLLL 'às' HH:mm'h'",
+    {
+      locale: ptBR,
+    }
+  );
+
+  const publishedDateRelativeToNow = formatDistanceToNow(publishAt, {
+    locale: ptBR,
+    addSuffix: true,
+  });
+
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar
-             
-            src="https://github.com/devbandeira.png"
-          />
+          <Avatar src={author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>Alexander Bandeira</strong>
-            <span>Developer</span>
+            <strong>{author.name}</strong>
+            <span>{author.role}</span>
           </div>
         </div>
 
-        <time title="23 de Janeiro às 10:00" dateTime="2023-01-11">
-          publicado há 1hora
+        <time title={publishedDateFormatted} dateTime={publishAt.toISOString()}>
+          {publishedDateRelativeToNow}
         </time>
       </header>
 
       <div className={styles.content}>
-        <p>Primeiro paragrafo</p>
-        <p>Segundo paragrafo</p>
-        {/* formas de por espaço, como um backspace no REACT {'    '} */}
-        <p>
-          <a href=""> #hastag1</a> <a href=""> #hastag2</a>{" "}
-          <a href=""> #hastag3</a>
-        </p>{" "}
+        {content.map((line) => {
+          if (line.type == "paragraph") {
+            return <p>{line.content}</p>;
+          } else if (line.type == "link") {
+            return (
+              <p>
+                <a href="">{line.content}</a>
+              </p>
+            );
+          }
+        })}
       </div>
 
       {/*Construção da parte de comentário */}
