@@ -67,7 +67,6 @@ const posts = [
 /*<div className={styles.wrapper}></div> -> Qnd uso Styles.Já Mosta o que tenho dentro do meu App.module.css 
 Devido CSS Modules extensão*/
 function App() {
-
   return (
     <>
       <Header />
@@ -76,12 +75,12 @@ function App() {
         <main>
           {posts.map((post) => {
             return (
-              <Post 
+              <Post
                 author={post.author}
                 content={post.content}
                 publishAt={post.publishAt}
               />
-            )
+            );
           })}
         </main>
       </div>
