@@ -4,6 +4,9 @@ import ptBR from "date-fns/locale/pt-BR";
 import { Avatar } from "./Avatar";
 import { Comment } from "./Comment";
 import styles from "./Post.module.css";
+import { useState } from "react";
+
+// estado/state = variáveis que eu quero que o componente monitore.
 
 //Quais infos variam de um post para o outro
 // author: {avatar_url: "", name: "", role: ""}
@@ -13,7 +16,8 @@ import styles from "./Post.module.css";
 //Pondo src={} entre chaves pq é uma variavel JS
 //para não ter que ficar escrevendo toda hora props.author, props., props. faço desestruturação do que vou usar apenas
 export function Post({ author, publishAt, content }) {
-  console.log(publishAt + "   destruido");
+  // console.log(publishAt + "   destruido");
+  const [comments, setComments] = useState([1,2,3,])
 
   const publishedDateFormatted = format(
     publishAt,
@@ -27,6 +31,17 @@ export function Post({ author, publishAt, content }) {
     locale: ptBR,
     addSuffix: true,
   });
+
+  function handleCreateNewComment(){
+    event.preventDefault();
+    //comments.push(4);//Então isso vai sumir, dando espaço para o useState()
+
+    //Aqui acontece imutabilidade, porque ele não passa somente o que ele quer inserir, ele passa um novo valor, passando tudo completo
+    setComments([...comments, comments.length + 1])
+    //para não ficar passando aqui valores fixos sempre, uso o SPREAD OPERADOR, pegando todos os valores anteriores e adicionando o novo valor
+
+    console.log(comments);
+  }
 
   return (
     <article className={styles.post}>
@@ -59,7 +74,7 @@ export function Post({ author, publishAt, content }) {
       </div>
 
       {/*Construção da parte de comentário */}
-      <form className={styles.commentForm}>
+      <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
 
         <textarea placeholder="Deixe um comentário" />
@@ -70,9 +85,9 @@ export function Post({ author, publishAt, content }) {
       </form>
 
       <div className={styles.commentList}>
-        <Comment />
-        <Comment />
-        <Comment />
+       {comments.map(comentarios => {
+        return <Comment />
+       })}
       </div>
     </article>
   );
