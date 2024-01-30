@@ -17,10 +17,9 @@ import { useState } from "react";
 //para não ter que ficar escrevendo toda hora props.author, props., props. faço desestruturação do que vou usar apenas
 export function Post({ author, publishAt, content }) {
   // console.log(publishAt + "   destruido");
-  const [comments, setComments] = useState(['Post muito bacana, hein?']);
+  const [comments, setComments] = useState(["Post muito bacana, hein?"]);
 
-  //novo estado para handleNewCommentChange, que vai armazenar um novo valor, limpar o textarea e atualizar com o novo comentario em tela
-  const [newCommentText, setnewCommentText] = useState('')
+  const [newCommentText, setnewCommentText] = useState("");
 
   const publishedDateFormatted = format(
     publishAt,
@@ -35,24 +34,16 @@ export function Post({ author, publishAt, content }) {
     addSuffix: true,
   });
 
-  function handleCreateNewComment(){
+  function handleCreateNewComment() {
     event.preventDefault();
-  //Tenho o setComments que vai pegar todos os COMENTARIOS "comments", mais o nosso newCommentText que foi criado um novo 
-  //estado para monitorar nosso textarea quando acontece o onChange() e criar em tela. E o setnewCommentText() atualiza o newCommentText()
-  //Ou seja o setComments vai pegar as duas variaveis, o SPREAD ...comments e o novo textarea newCommentText e dar um setComments que é ativo
-  //no onSubmit do formulário. e em seguida vai por o TEXTAREA vazio setnewCommentText(''), mudando na TAG TEXTAREA que o valor dela é o valor
-  // do newCommentText, que agora é VAZIO DEVIDO O setnewCommentText('')
+
     setComments([...comments, newCommentText]);
 
-    setnewCommentText('')
+    setnewCommentText("");
   }
 
-  //Funçao que vai ser chamada após ser relembrado de programação declarativa, que vai monitorar a mudança do nosso textarea
-  //Aqui dentro tbm tenho acesso ao event.target que retorna diretamente a textarea diretamente e não o formulário, porque o evento agora
-  //foi adicionado no TEXTAREA e não no formulário. Evento do formulário (onSubmit) e do textarea(onChange)
-  function handleNewCommentChange() {//Change é para quando o comments alterar
-    setnewCommentText(event.target.value); //Agora tenho o valor da TEXTAREA armazenado no meu estado setnewCommentText(), posso usar a variável
-    //newCommentText que tem o valor mais recente adicionado para adicionar um novo comentário no final.
+  function handleNewCommentChange() {
+    setnewCommentText(event.target.value);
   }
 
   return (
@@ -74,10 +65,10 @@ export function Post({ author, publishAt, content }) {
       <div className={styles.content}>
         {content.map((line) => {
           if (line.type == "paragraph") {
-            return <p>{line.content}</p>;
+            return <p key={line.content}>{line.content}</p>;
           } else if (line.type == "link") {
             return (
-              <p>
+              <p key={line.content}>
                 <a href="">{line.content}</a>
               </p>
             );
@@ -89,8 +80,13 @@ export function Post({ author, publishAt, content }) {
       <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
 
-      {/* Dando um name para conseguir pegar no event.target e passar para o useState */}
-        <textarea name="comment" placeholder="Deixe um comentário" value={newCommentText} onChange={handleNewCommentChange}/>
+        {/* Dando um name para conseguir pegar no event.target e passar para o useState */}
+        <textarea
+          name="comment"
+          placeholder="Deixe um comentário"
+          value={newCommentText}
+          onChange={handleNewCommentChange}
+        />
 
         <footer>
           <button type="submit">Publicar</button>
@@ -98,9 +94,9 @@ export function Post({ author, publishAt, content }) {
       </form>
 
       <div className={styles.commentList}>
-       {comments.map(comentarios => {
-        return <Comment  content={comentarios}/>
-       })}
+        {comments.map((comentarios) => {
+          return <Comment key={comentarios} content={comentarios} />;
+        })}
       </div>
     </article>
   );
