@@ -46,8 +46,15 @@ export function Post({ author, publishAt, content }) {
     setnewCommentText(event.target.value);
   }
 
-  function deleteComment(comment){
-    console.log(`Vou deletar o comentario ${comment}`)
+  function deleteComment(commentToDelete){
+    //Uso método FILTER do JS para retornar TRUE nos comentarios que quero manter
+    const commentsWithoutDeleteOne = comments.filter(comment => {
+      return comment !== commentToDelete;
+    });
+
+    //Uso o setComments(commentsWithoutDeleteOne); para criar a nova lista sem
+    //o comentário que quero excluir.
+    setComments(commentsWithoutDeleteOne);
   }
 
   return (
