@@ -144,10 +144,17 @@ alguma estilização em algum componente nesse ocntainer*/
 
 }
 
-.commentForm button[type=submit]:hover {
+/* So quero que o hover funcione, caso o botão nao esteja desabilitado .
+-> Lendo que ta em código: Quando ele não estiver disabled*/
+.commentForm button[type=submit]:not(:disabled):hover {
   background: var(--green-300);
 }
 
+/* Que o button fique opaco quando esta disabled e o curso tenha notAllowed*/
+.commentForm button[type=submit]:disabled{
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 
 .commentList{
   margin-top: 2rem;
