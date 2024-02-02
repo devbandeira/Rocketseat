@@ -1,0 +1,161 @@
+.post {
+  background: var(--gray-800);
+  border-radius: 8px;
+  padding: 2.5rem;
+}
+
+/* .post + .post  = Quero estilizar todo post, que antes dele tenha um post também */
+/* Isso so vai aplicar para post que tenham outros posts antes dele. daria para fazer com first child, gap, etc */
+.post + .post {
+  margin-top: 2rem;
+}
+
+.content {
+  line-height: 1.6;
+  color: var(--gray-300);
+  margin-top: 1.5rem;
+}
+
+.content p {
+  margin-top: 1rem;
+}
+
+/* ou .content a */
+.content p a {
+  font-weight: bold;
+  color: var(--green-500);
+  text-decoration: none;
+}
+
+.content p a:hover {
+  color: var(--green-300);
+}
+
+/* Busca apenas as TAGAS HEADERS que estão no primeiro NIVEL DENTRO DO POST 
+Diratemente dentrodo nosso POST, para não pegar outros HEADERS dentro do post*/
+.post > header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /*Colocando nosso conteudo espaçado do
+  <time title='23 de Janeiro às 10:00' dateTime='2023-01-11'>
+          publicado há 1hora
+        </time>
+  */
+}
+
+.post > header time {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  /*Traz os conteuods para a direita da minha imagem e tenham 16px entre eles 1rem*/
+}
+
+
+
+/* authorInfo {
+  display: flex;
+  flex-direction: column;/*forncando para strong e span ficarem embaixo uma da outra, porque por padrao sao display:inline
+} 
+
+ou fazer o que fiz anaixo
+*/
+
+.authorInfo strong {
+  display: block;
+  color: var(--gray-100);
+  line-height: 1.6;
+}
+
+.authorInfo span {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--gray-400);
+  line-height: 1.6;
+}
+
+/* Nossa área de comentário */
+
+.commentForm {
+  width: 100%;
+  margin: 1.5rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--gray-600);
+}
+
+/*escondendo o botao*/
+.commentForm footer {
+  visibility: hidden;
+  max-width: 0;
+}
+
+/*diferente do focus do css. focus-within -> Ele dizer que se houver qualquer foco
+no input ou textarea ou qualquer elemento dentro do commentForm eu quero aplicar 
+alguma estilização em algum componente nesse ocntainer*/
+.commentForm:focus-within footer{
+  visibility: visible;
+  max-height: none;
+}
+
+.commentForm > strong{
+  line-height: 1.6;
+  color: var(--gray-100);
+}
+
+.commentForm textarea {
+  width: 100%;
+  background: var(--gray-900);
+  border: 0;
+  resize: none;
+  height: 6rem;
+  padding: 1rem;
+  border-radius: 8px;
+  color: var(--gray-100);
+  line-height: 1.4rem;
+  margin-top: 1rem;
+
+}
+
+.commentForm button[type=submit] {
+  padding: 1rem 1.5rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  border: 0;
+  background: var(--green-500);
+  color: var(--withe);
+  cursor: pointer;
+
+  transition: background-color 0.1s;
+
+  /* desaparecendo com o botão */
+  /*visibility: hidden;
+  max-height: 0;
+  display: none;*/
+
+  /* ------Aqui ele desaparece, mas continua ocupando espaço
+  vou entao no Post.jsx e envoltar o btn com um footer e aplicar
+  essas propriedades css nela------- */
+
+
+}
+
+/* So quero que o hover funcione, caso o botão nao esteja desabilitado .
+-> Lendo que ta em código: Quando ele não estiver disabled*/
+.commentForm button[type=submit]:not(:disabled):hover {
+  background: var(--green-300);
+}
+
+/* Que o button fique opaco quando esta disabled e o curso tenha notAllowed*/
+.commentForm button[type=submit]:disabled{
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.commentList{
+  margin-top: 2rem;
+}
