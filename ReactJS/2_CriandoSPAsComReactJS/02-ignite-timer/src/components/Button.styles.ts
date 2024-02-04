@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export type ButtonVariant = 'primary' | 'secundary' | 'danger' | 'success';
 
@@ -19,6 +19,6 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
 
 /* Interpolação de STIRNG */
   ${(props) => {
-    return `background-color: ${buttonVariants[props.variant]}`
+    return css`background-color: ${buttonVariants[props.variant]}`
   }}
 `
