@@ -22,7 +22,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
   margin: 8px;
 
   /* Acessando as propriedades do meu THEMA default.ts */
-  background-color: ${props => props.theme.secondary};
+  background-color: ${props => props.theme["green-500"]};
   color: ${props => props.theme.white}
 
   /* Interpolação de STIRNG */
