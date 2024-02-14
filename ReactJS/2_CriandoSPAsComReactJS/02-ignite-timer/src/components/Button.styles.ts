@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import 'styled-components';
 
 export type ButtonVariant = "primary" | "secundary" | "danger" | "success";
 
