@@ -8,11 +8,18 @@ import {
   StartCountdownButton,
   TaskInput,
 } from './styles'
+import { useState } from 'react'
 
+// uncontrolled -> Buscamos somente a informação do valor INPUT, somente quando precisarmos dela.
 export function Home() {
+  // Assim eu perco a fluides "Habilito algo, desabilito algo", mas ganho em performance.
+  function handleSubmit(event) {
+    // Forma de pegar o valor do input, dando um name="task" para ele e colocando o onSubmit no <form>
+    event.target.task.value
+  }
   return (
     <HomeContainer>
-      <form action="">
+      <form onSubmit={handleSubmit} action="">
         <FormContainer>
           <label htmlFor="task">Vou trabalhar em</label>
           <TaskInput
