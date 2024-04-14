@@ -10,13 +10,11 @@ import {
   StartCountdownButton,
   TaskInput,
 } from './styles'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import * as zod from 'zod'
 
-// Vou criar um componente fora da função mesmo e passar de que forma quero realizar as validações
-// Camamos de Schema porque essas lib usam um formato de validação que se chama Schema BASIC, ou seja, define um formato
-// e usa esse formato para validar meu dado.
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
   minutesAmount: zod
@@ -25,29 +23,23 @@ const newCycleFormValidationSchema = zod.object({
     .max(60, 'O ciclo precisa ser de no máximo 60 min'),
 })
 
-// POSSO EXCLUIR DEPOIS DO ZOD.INFER
-// interface NewCycleFormData {
-//   task: string
-//   minutesAmout: number
-// }
-
 type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+
 export function Home() {
-  // Passando um objeto de configuração para o userForm para usar o zod
-  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
+  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
-      // Vai aparecer aqui as opções porque passei o GENERICS <>, caso não, teria que fazer manual
       task: '',
-      minutesAmout: 0,
+      minutesAmount: 0,
     },
   })
 
   // Posso observar aqui que o tipo quando passo por cima ainda é any, eu poderia criar uma interface
   // e deduzir que sei os valores que serão retornados neste objeto, os inputs taks e minutesAmout, mas no useFor()
   // posso passar os valores padrão para este DATA
-  function handleCreateNewCycle(data) {
+  function handleCreateNewCycle(data: NewCycleFormData) {
     console.log(data)
+    reset()
   }
 
   const task = watch('task')
