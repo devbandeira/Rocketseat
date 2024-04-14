@@ -18,27 +18,37 @@ import * as zod from 'zod'
 // Camamos de Schema porque essas lib usam um formato de validação que se chama Schema BASIC, ou seja, define um formato
 // e usa esse formato para validar meu dado.
 const newCycleFormValidationSchema = zod.object({
-  task: zod.string().min(1, 'Informe a tarefa'), // Quero que o TASK seja uma string, que tenho no minimo um caractere e que a mensagem caso não tenha no min 1 carc seja 'Informe a tarefa'
+  task: zod.string().min(1, 'Informe a tarefa'),
   minutesAmount: zod
     .number()
     .min(5)
     .max(60, 'O ciclo precisa ser de no máximo 60 min'),
-}) // Aqui o formato é um OBJECT porque na minha FN handleCreateNewCycle, quando clico no btn
-// Me retorna um objeto, então a validação vai ser em cima de um object.
-// Após fazer a validação, devo usar uma função chamada formState e dentro dele, tenho uma variável chamada ERROS, que vai informar os meus erros de validação
+})
 
+// POSSO EXCLUIR DEPOIS DO ZOD.INFER
+// interface NewCycleFormData {
+//   task: string
+//   minutesAmout: number
+// }
+
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 export function Home() {
   // Passando um objeto de configuração para o userForm para usar o zod
-  const { register, handleSubmit, watch, formState } = useForm({
+  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      // Vai aparecer aqui as opções porque passei o GENERICS <>, caso não, teria que fazer manual
+      task: '',
+      minutesAmout: 0,
+    },
   })
 
-  function handleCreateNewCycle(data: any) {
+  // Posso observar aqui que o tipo quando passo por cima ainda é any, eu poderia criar uma interface
+  // e deduzir que sei os valores que serão retornados neste objeto, os inputs taks e minutesAmout, mas no useFor()
+  // posso passar os valores padrão para este DATA
+  function handleCreateNewCycle(data) {
     console.log(data)
   }
-
-  // posso apagar-> somente para mostrar no console o erro
-  console.log(formState.errors)
 
   const task = watch('task')
 
@@ -53,16 +63,6 @@ export function Home() {
             id="task"
             list="task-suggestions"
             placeholder="Dê um nome para o seu projeto"
-            /* A fn register recebe um parametro que retorna alguns métodos que retorna alguns métodos que usamos em formulário em JS
-             function register(name: string) {
-                return {
-                  onChange: () => void,
-                  onBlur: () => void,
-                  etc..
-                }
-             }
-             O {...} faz pegar todas as coisas retornadas no regster('task') e acoplha no nosso input como propriedade
-            */
             {...register('task')}
           />
 
