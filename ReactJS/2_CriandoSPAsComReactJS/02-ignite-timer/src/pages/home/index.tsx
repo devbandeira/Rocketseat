@@ -10,32 +10,42 @@ import {
   StartCountdownButton,
   TaskInput,
 } from './styles'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import * as zod from 'zod'
+
+// Vou criar um componente fora da função mesmo e passar de que forma quero realizar as validações
+// Camamos de Schema porque essas lib usam um formato de validação que se chama Schema BASIC, ou seja, define um formato
+// e usa esse formato para validar meu dado.
+const newCycleFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa'), // Quero que o TASK seja uma string, que tenho no minimo um caractere e que a mensagem caso não tenha no min 1 carc seja 'Informe a tarefa'
+  minutesAmount: zod
+    .number()
+    .min(5)
+    .max(60, 'O ciclo precisa ser de no máximo 60 min'),
+}) // Aqui o formato é um OBJECT porque na minha FN handleCreateNewCycle, quando clico no btn
+// Me retorna um objeto, então a validação vai ser em cima de um object.
+// Após fazer a validação, devo usar uma função chamada formState e dentro dele, tenho uma variável chamada ERROS, que vai informar os meus erros de validação
 
 export function Home() {
-  // form é um obj que tem várias funções dentro dele que posso usar, posso desestruturar
-  // register -> É um método que vai "add" um input ao nosso formulário, quando uso o useForm()
-  // e o register fala quais são os campos que vou ter no meu formulário. Vou passar la no meu TakInput {...register('darUmNomeParaOInput')}
-  const { register, handleSubmit, watch } = useForm()
+  // Passando um objeto de configuração para o userForm para usar o zod
+  const { register, handleSubmit, watch, formState } = useForm({
+    resolver: zodResolver(newCycleFormValidationSchema),
+  })
 
-  // Importante no dar o nome do método igual o nome do método que foi desestruturado {handleSubmit}
-  // Passando como argumento o data que são os dados de input do nosso formulário
   function handleCreateNewCycle(data: any) {
     console.log(data)
   }
 
-  // Habilitando/Desabilitando o btn se o input taks estiver preenchido ou não, e dentro do meu useForm() pego uma fn WATCH
-  // Agora consigo saber o valor do meu campo/input task em tempo real, e la no btn posso usar a estratégia de dizer que se o
-  // o input taks for fazio ou null, vou desabilitar disabled={!task}
+  // posso apagar-> somente para mostrar no console o erro
+  console.log(formState.errors)
+
   const task = watch('task')
-  // Criando uma variavel auxiliar que não alteram a performance e nem prejudicam a gente, mas melhora a legibilidade
-  // Ex: const task = watch('task') -> quem le vai ter que correr até o final para entender o que acontecer e pq utilizando isso
-  // Ou seja, o submite desse formulário está desabilitado ou não?(isSubmitDisabled), vai estar desabilitado quando não tenho nada na minha task (!task)
+
   const isSubmitDisabled = !task
 
   return (
     <HomeContainer>
-      {/* Passando no onSubmit o handleSubmit do useForm() e passar para ele como parametro
-      a nossa função de submit onSubmit={handleSubmit(handleCreateNewCycle)} */}
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
         <FormContainer>
           <label htmlFor="task">Vou trabalhar em</label>
