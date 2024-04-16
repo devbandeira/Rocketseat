@@ -33,8 +33,10 @@ interface Cycle {
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([])
-
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+
+  // Criando novo estado para contagem em segundos, vai armazenar o tanto de minutos ja passado desde que o ciclo foi ativo
+  const [amountSecondsPassed, setamountSecondsPassed] = useState(0)
 
   const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -61,8 +63,26 @@ export function Home() {
   }
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  // console.log(activeCycle)
 
-  console.log(activeCycle)
+  // Criando uma variavel que vai converter o numero de minutos em segundos, lembrando que
+  // devo ter o ciclo ativo ou não, então se tiver o ciclo ativoessa variavel vai ser o numero de minutos possivel * 60
+  // se eu não tiver ciclo ativo será 0.
+  const totalSeconds = activeCycle ? activeCycle.minutesAmout * 60 : 0
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
+
+  // agora que tenho o numero total de segundos e o tempo que passou, preciso converter para exibir em tela
+  // Math.floor para arredondar para baixo, devido poder dar numero quebrado 1500 seg e 1499 seg / 60
+  const minutesAmout = Math.floor(currentSeconds / 60)
+  // Calculando quantos segundos me restam após os minutos
+  const secondsAmount = currentSeconds % 60
+
+  // Manipulando para mostrar meu contador em tela, pois em alguns casos, ele pode ter menos de 2 numeros e ser 9min da mesma
+  // forma que pode ser 19 min, então quero mostrar o 0 na frente, caso seja menor que 10
+  // Converto para String para usar o padStart() que é um método que preenche uma string caso ela não tenha aquele tamanho ainda, com um caractere.
+  const minutes = String(minutesAmout).padStart(2, '0') // Quero que meu padStart tenha 2 caracteres, caso não tenha preenche com zero o inicio
+  const seconds = String(secondsAmount).padStart(2, '0')
+  // Agora só ir nos span e passar elas em forma de função JS, como tenho uma string, eu posso passar a posição minutes[0...] posso trabalhar com strings como fossem vetores
 
   const task = watch('task')
   const isSubmitDisabled = !task
@@ -103,11 +123,12 @@ export function Home() {
         </FormContainer>
 
         <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          {/* posso trabalhar com strings como fossem vetores */}
+          <span>{minutes[0]}</span>
+          <span>{minutes[1]}</span>
           <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{seconds[1]}</span>
+          <span>{seconds[1]}</span>
         </CountdownContainer>
 
         <StartCountdownButton disabled={isSubmitDisabled} type="submit">
