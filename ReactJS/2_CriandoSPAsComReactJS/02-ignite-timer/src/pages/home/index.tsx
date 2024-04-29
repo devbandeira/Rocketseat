@@ -1,4 +1,4 @@
-import { Play } from 'phosphor-react'
+import { HandPalm, Play } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { useState, useEffect } from 'react'
 
@@ -13,6 +13,7 @@ import {
   MinutesAmountInput,
   Separator,
   StartCountdownButton,
+  StopCountdownButton,
   TaskInput,
 } from './styles'
 const newCycleFormValidationSchema = zod.object({
@@ -28,6 +29,7 @@ interface Cycle {
   task: string
   minutesAmount: number
   startDate: Date
+  interruptedDate?: Date // ? Para dizer que ela pode existir ou não caso não interrompida
 }
 
 export function Home() {
@@ -74,6 +76,28 @@ export function Home() {
     reset()
   }
 
+  // Fn para interromper o ciclo
+  // chamo essa função no meu btn de interromper
+  function handleInterruptCycle() {
+    // Ficou estranho. Mas PRECISAMOS LEMBRAR do principio de imutabilidade do REACT, nunca podemos alterar uma informação sem seguir os principios
+    // da imutabilidade, nesse caso, quando estamos trabalhando com arrays, fica mais chato, pois são arrays de objetos. Então se quero mudar
+    // uma informação de um desses objetos desse arrays de ciclos, obrigatoriamente preciso percorrer todos os itens do array para achar o obj
+    // que quero alterar, ai sim fazer a alteração.
+
+    // Uso aqui o map, porque estou chamando a função "setCycles", estou alterando o valor da variavel que armazena os ciclos da minha aplicação
+    // e preciso dizer qual o novo valor. O Map é importante porque ele vai percorrer cada cilco e vai retornar de dentro do map cada um dos ciclos,
+    // alterados ou não
+    setCycles(
+      cycles.map((cycle) => {
+        if (cycle.id === activeCycleId) {
+          return { ...cycle, interruptedDate: new Date() }
+        } else {
+          return cycle
+        }
+      }),
+    )
+    setActiveCycleId(null)
+  }
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
 
@@ -101,6 +125,7 @@ export function Home() {
             id="task"
             list="task-suggestions"
             placeholder="Dê um nome para o seu projeto"
+            disabled={!!activeCycle} // Aqui precisa ser um boolean, então uso !! para se tiver algum valor dentro converter para true, se não para false
             {...register('task')}
           />
           <datalist id="task-suggestions">
@@ -117,6 +142,7 @@ export function Home() {
             step={5}
             min={5}
             max={60}
+            disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
           />
           <span>minutos.</span>
@@ -128,10 +154,18 @@ export function Home() {
           <span>{seconds[0]}</span>
           <span>{seconds[1]}</span>
         </CountdownContainer>
-        <StartCountdownButton disabled={isSubmitDisable} type="submit">
-          <Play size={24} />
-          Começar
-        </StartCountdownButton>
+
+        {activeCycle ? (
+          <StopCountdownButton onClick={handleInterruptCycle} type="button">
+            <HandPalm size={24} />
+            Interromper
+          </StopCountdownButton>
+        ) : (
+          <StartCountdownButton disabled={isSubmitDisable} type="submit">
+            <Play size={24} />
+            Começar
+          </StartCountdownButton>
+        )}
       </form>
     </HomeContainer>
   )
