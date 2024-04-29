@@ -20,7 +20,7 @@ const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
   minutesAmount: zod
     .number()
-    .min(5, 'O ciclo precisa ser de no mínimo 5 minutos.')
+    .min(1, 'O ciclo precisa ser de no mínimo 5 minutos.')
     .max(60, 'O ciclo precisa ser de no máximo 60 minutos.'),
 })
 type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
@@ -30,6 +30,7 @@ interface Cycle {
   minutesAmount: number
   startDate: Date
   interruptedDate?: Date // ? Para dizer que ela pode existir ou não caso não interrompida
+  finishedDate?: Date // Para ver a data finalizada e zerar o contador.
 }
 
 export function Home() {
@@ -45,20 +46,41 @@ export function Home() {
   })
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
   useEffect(() => {
     let interval: number
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate),
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate,
         )
+
+        if (secondsDifference >= totalSeconds) {
+          // Quando atualizo um ESTADO setCycles, e seu estado depende do valor dele mesmo anterior, escrevemos isso no formato de função
+          // state => {}
+          setCycles((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finishedDate: new Date() }
+              } else {
+                return cycle
+              }
+            }),
+          )
+          setAmountSecondsPassed(totalSeconds) // Para poder zerar o contador quando chegar a zero, também poderia passar > no  if (secondsDifference >= totalSeconds)
+          clearInterval(interval)
+        } else {
+          // Só vou att a quantidade de segundos se eu não passei da minha quantidade de segundos
+          setAmountSecondsPassed(secondsDifference)
+        }
       }, 1000)
     }
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle])
+  }, [activeCycle, totalSeconds, activeCycleId])
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     const id = String(new Date().getTime())
@@ -87,8 +109,10 @@ export function Home() {
     // Uso aqui o map, porque estou chamando a função "setCycles", estou alterando o valor da variavel que armazena os ciclos da minha aplicação
     // e preciso dizer qual o novo valor. O Map é importante porque ele vai percorrer cada cilco e vai retornar de dentro do map cada um dos ciclos,
     // alterados ou não
-    setCycles(
-      cycles.map((cycle) => {
+    setCycles((state) =>
+      // Quando atualizo um ESTADO setCycles, e seu estado depende do valor dele mesmo anterior, escrevemos isso no formato de função
+      // state => {}
+      state.map((cycle) => {
         if (cycle.id === activeCycleId) {
           return { ...cycle, interruptedDate: new Date() }
         } else {
@@ -98,7 +122,7 @@ export function Home() {
     )
     setActiveCycleId(null)
   }
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
 
   const minutesAmount = Math.floor(currentSeconds / 60)
@@ -140,7 +164,7 @@ export function Home() {
             id="minutesAmount"
             placeholder="00"
             step={5}
-            min={5}
+            min={1}
             max={60}
             disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
