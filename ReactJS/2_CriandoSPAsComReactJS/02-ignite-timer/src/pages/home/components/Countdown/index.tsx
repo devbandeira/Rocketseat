@@ -1,19 +1,25 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { CountdownContainer, Separator } from './styles'
 import { differenceInSeconds } from 'date-fns'
 import { CyclesContext } from '../..'
 
-interface CountdownProps {
-  activeCycle: any
-  setCycles: any
-  activeCycleId: any
-}
+// interface CountdownProps {
+//   activeCycle: any
+//   setCycles: any
+//   activeCycleId: any
+// }
 
 export function Countdown() {
   // Usando o contexto exportado do componente HOME
-  const { activeCycle, activeCycleId, markCurrentCycleAsFinished } =
-    useContext(CyclesContext)
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
+  const {
+    activeCycle,
+    activeCycleId,
+    markCurrentCycleAsFinished,
+    amountSecondsPassed,
+    setSecondsPassed,
+  } = useContext(CyclesContext)
+
+  // trazendo a setSecondsPassed no lugar do setAmountSecondsPassed() do useState()
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
@@ -29,7 +35,7 @@ export function Countdown() {
 
         if (secondsDifference >= totalSeconds) {
           markCurrentCycleAsFinished()
-          setAmountSecondsPassed(totalSeconds)
+          setSecondsPassed(totalSeconds)
           clearInterval(interval)
 
           // COMENTANDO ELA POIS VOU DEIXAR NA HOME E PASSAR COMO CONTEXTO (markCurrentCycleAsFinished)
@@ -43,7 +49,7 @@ export function Countdown() {
           //     }),
           //   )
         } else {
-          setAmountSecondsPassed(secondsDifference)
+          setSecondsPassed(secondsDifference)
         }
       }, 1000)
     }
@@ -51,7 +57,13 @@ export function Countdown() {
       clearInterval(interval)
     }
     // Como estamos usando eslint toda variavel ou fn que a gente usa, ele obriga a passar como dpeendencia, por isso passo também "markCurrentCycleAsFinished"
-  }, [activeCycle, totalSeconds, activeCycleId, markCurrentCycleAsFinished])
+  }, [
+    activeCycle,
+    totalSeconds,
+    activeCycleId,
+    markCurrentCycleAsFinished,
+    setSecondsPassed,
+  ])
 
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
 

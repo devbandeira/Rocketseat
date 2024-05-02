@@ -1,5 +1,5 @@
 import { HandPalm, Play } from 'phosphor-react'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useState, useEffect, createContext } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -28,6 +28,8 @@ interface Cycle {
 interface CyclesContextType {
   activeCycle: Cycle | undefined
   activeCycleId: string | null
+  amountSecondsPassed: number
+  setSecondsPassed: (seconds: number) => void
   // Não é aconselhavel passar a função do useState() seyCycles inteira pelo CONTEXT, porque temos que TIPAR com TS e se passar o mouse em cima dela
   // ela é um " React.Dispatch<React.SetStateAction<Cycle[]>> ", ao invés de enviar nesses casos a função setCycles inteira. Ele cria uma variavel
   // usando o setCycles e passo a função no contexto.
@@ -56,12 +58,44 @@ interface CyclesContextType {
 // linha 90 ( <CyclesContext.Provider value={{ activeCycle }}> )
 export const CyclesContext = createContext({} as CyclesContextType) // Exportando o contexto para o Componente CountDown acessar o contexto
 
+const newCycleFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa'),
+  minutesAmount: zod
+    .number()
+    .min(1, 'O ciclo precisa ser de no mínimo 5 minutos.')
+    .max(60, 'O ciclo precisa ser de no máximo 60 minutos.'),
+})
+
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([])
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
 
+  // Agora a fn REGISTER é usada dentro do NewCycleForm, para eu acessar, posso jogar como propriedade ou context. Mas ela de fato não é algo do nosso contexto
+  // é algo de uma lib de fora, se for trocada, parará de funcionar.
+  // Mas não vamos usar nem PROPRIEDADE ou CONTEXT, mas VAMOS USAR O CONTEXT PROPRIO DA LIB REACT-HOOK-FORM
+  // AO invés de fazer a desestruturação " { register, handleSubmit, watch, reset } "
+  const newCycleForm = useForm<NewCycleFormData>({
+    resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
+  })
+  // Como preciso de umas fn que vem dele newCycleForm vou desestruturar aqui fora
+  // continua a mesma coisa que antes, mas continuo tendo acesso a variavel newCycleForm completa sem desestruturar
+  // Tirei o registre pq só uso no componente de formulário
+  // agora em volta do meu componente <NewCycleForm /> vou por <FormProvider /> que envolverá o <NewCycleForm />
+  const { handleSubmit, watch, reset } = newCycleForm
+
+  // COMO NÃO GOSTAMOS DE PASSAR A FUNÇÃO INTEIRA POR CONTEXTO, VAMOS FAZER UM PROXY, UMA FUNÇÃO QUE CHAMA OUTRA FUNÇÃO
+  function setSecondsPassed(seconds: number) {
+    setAmountSecondsPassed(seconds)
+  }
   // Ao invés de passar o SetCycle do useState(), vou passar essa fn markCurrentCycleAsFinished
   function markCurrentCycleAsFinished() {
     setCycles((state) =>
@@ -75,21 +109,22 @@ export function Home() {
     )
   }
 
-  // function handleCreateNewCycle(data: NewCycleFormData) {
-  //   const id = String(new Date().getTime())
+  // Essa fn atualiza o setAmountSecondsPAssed para zero, ela precisa também acesso a variavel amountSecondsPast
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    const id = String(new Date().getTime())
 
-  //   const newCycle: Cycle = {
-  //     id,
-  //     task: data.task,
-  //     minutesAmount: data.minutesAmount,
-  //     startDate: new Date(),
-  //   }
+    const newCycle: Cycle = {
+      id,
+      task: data.task,
+      minutesAmount: data.minutesAmount,
+      startDate: new Date(),
+    }
 
-  //   setCycles((state) => [...state, newCycle])
-  //   setActiveCycleId(id)
-  //   setAmountSecondsPassed(0)
-  //   reset()
-  // }
+    setCycles((state) => [...state, newCycle])
+    setActiveCycleId(id)
+    setAmountSecondsPassed(0)
+    reset()
+  }
 
   function handleInterruptCycle() {
     setCycles((state) =>
@@ -104,15 +139,26 @@ export function Home() {
     setActiveCycleId(null)
   }
 
-  // const task = watch('task')
-  // const isSubmitDisable = !task
+  const task = watch('task')
+  const isSubmitDisable = !task
   return (
+    // Envolvendo com form provider e fznd um spreed
+    // Como fiz o spreed, to passando para o meu <NewCycleForm /> todo método Ex."register={register} etc..."
     <HomeContainer>
-      <form /* </HomeContainer>onSubmit={handleSubmit(handleCreateNewCycle)} */>
+      <form onSubmit={handleSubmit(handleCreateNewCycle)}>
         <CyclesContext.Provider
-          value={{ activeCycle, activeCycleId, markCurrentCycleAsFinished }}
+          // Ideal de coisas no contexto, somente coisas que não vão mudar se trocarmos uma LIB ou algo do genero
+          value={{
+            activeCycle,
+            activeCycleId,
+            markCurrentCycleAsFinished,
+            amountSecondsPassed,
+            setSecondsPassed,
+          }}
         >
-          {/* <NewCycleForm /> */}
+          <FormProvider {...newCycleForm}>
+            <NewCycleForm />
+          </FormProvider>
           <Countdown />
         </CyclesContext.Provider>
         {activeCycle ? (
@@ -121,7 +167,7 @@ export function Home() {
             Interromper
           </StopCountdownButton>
         ) : (
-          <StartCountdownButton /* disabled={isSubmitDisable} */ type="submit">
+          <StartCountdownButton disabled={isSubmitDisable} type="submit">
             <Play size={24} />
             Começar
           </StartCountdownButton>
