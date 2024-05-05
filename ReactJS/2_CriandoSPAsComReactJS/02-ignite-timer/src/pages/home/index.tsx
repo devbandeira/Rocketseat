@@ -26,13 +26,8 @@ const newCycleFormValidationSchema = zod.object({
 type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home() {
-  // Usando o contexto criado
   const { activeCycle, createNewCycle, interruptCurrentCycle } =
     useContext(CyclesContext)
-  // Agora a fn REGISTER é usada dentro do NewCycleForm, para eu acessar, posso jogar como propriedade ou context. Mas ela de fato não é algo do nosso contexto
-  // é algo de uma lib de fora, se for trocada, parará de funcionar.
-  // Mas não vamos usar nem PROPRIEDADE ou CONTEXT, mas VAMOS USAR O CONTEXT PROPRIO DA LIB REACT-HOOK-FORM
-  // AO invés de fazer a desestruturação " { register, handleSubmit, watch, reset } "
   const newCycleForm = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
     defaultValues: {
@@ -40,21 +35,24 @@ export function Home() {
       minutesAmount: 0,
     },
   })
-  // Como preciso de umas fn que vem dele newCycleForm vou desestruturar aqui fora
-  // continua a mesma coisa que antes, mas continuo tendo acesso a variavel newCycleForm completa sem desestruturar
-  // Tirei o registre pq só uso no componente de formulário
-  // agora em volta do meu componente <NewCycleForm /> vou por <FormProvider /> que envolverá o <NewCycleForm />
-  const { handleSubmit, watch /* reset */ } = newCycleForm
 
-  // COMO NÃO GOSTAMOS DE PASSAR A FUNÇÃO INTEIRA POR CONTEXTO, VAMOS FAZER UM PROXY, UMA FUNÇÃO QUE CHAMA OUTRA FUNÇÃO
+  const { handleSubmit, watch, reset } = newCycleForm
+
+  // Criando a fn para tirar o reset() do CyclesContext
+  // Ela aqui vai chamar a createNewCycle, e vou passar a handleCreateNewCycle no lugar da createNewCycle
+  // A nivel de convenção sempre boto HANDLE quando a função vem de algum evento.
+  // Assim posso DESCOMENTAR o meu reset
+  function handleCreateNewCyle(data: NewCycleFormData) {
+    createNewCycle(data)
+    reset()
+  }
+  // Agora nosso reset não esta mais no CONTEXTO e sim na home
 
   const task = watch('task')
   const isSubmitDisable = !task
   return (
-    // Envolvendo com form provider e fznd um spreed
-    // Como fiz o spreed, to passando para o meu <NewCycleForm /> todo método Ex."register={register} etc..."
     <HomeContainer>
-      <form onSubmit={handleSubmit(createNewCycle)}>
+      <form onSubmit={handleSubmit(handleCreateNewCyle)}>
         <FormProvider {...newCycleForm}>
           <NewCycleForm />
         </FormProvider>

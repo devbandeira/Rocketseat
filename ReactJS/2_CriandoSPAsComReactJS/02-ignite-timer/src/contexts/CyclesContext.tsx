@@ -71,6 +71,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
     setCycles((state) => [...state, newCycle])
     setActiveCycleId(id)
     setAmountSecondsPassed(0)
+    // Como não é legal criar contexto e chamar dentro uma lib dentro do contexto, vou criar uma nova função no meu < Home />
     // reset()
   }
 
