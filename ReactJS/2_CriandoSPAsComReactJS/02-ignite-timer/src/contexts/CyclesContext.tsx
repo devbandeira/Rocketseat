@@ -15,6 +15,8 @@ interface Cycle {
 }
 
 interface CyclesContextType {
+  // Cycle para enviar para history
+  cycles: Cycle[]
   activeCycle: Cycle | undefined
   activeCycleId: string | null
   amountSecondsPassed: number
@@ -88,6 +90,7 @@ export function CyclesContextProvider({ children }: CycleContextProviderProps) {
   return (
     <CyclesContext.Provider
       value={{
+        cycles,
         activeCycle,
         activeCycleId,
         markCurrentCycleAsFinished,
