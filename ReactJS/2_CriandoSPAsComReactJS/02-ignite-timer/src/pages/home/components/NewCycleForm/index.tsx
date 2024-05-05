@@ -1,9 +1,7 @@
-import { useForm, useFormContext } from 'react-hook-form'
-import { FormContainer, MinutesAmountInput, TaskInput } from './styles'
-import * as zod from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useContext } from 'react'
-import { CyclesContext } from '../..'
+import { useFormContext } from 'react-hook-form'
+import { CyclesContext } from '../../../../contexts/CyclesContext'
+import { FormContainer, MinutesAmountInput, TaskInput } from './styles'
 
 export function NewCycleForm() {
   const { activeCycle } = useContext(CyclesContext)
@@ -33,7 +31,7 @@ export function NewCycleForm() {
         id="minutesAmount"
         placeholder="00"
         step={5}
-        min={1}
+        min={5}
         max={60}
         disabled={!!activeCycle}
         {...register('minutesAmount', { valueAsNumber: true })}
