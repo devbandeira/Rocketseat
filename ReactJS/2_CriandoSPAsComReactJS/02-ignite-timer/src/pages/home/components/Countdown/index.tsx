@@ -3,7 +3,6 @@ import { CountdownContainer, Separator } from './styles'
 import { differenceInSeconds } from 'date-fns'
 import { CyclesContext } from '../../../../contexts/CyclesContext'
 
-
 // interface CountdownProps {
 //   activeCycle: any
 //   setCycles: any
@@ -31,7 +30,9 @@ export function Countdown() {
       interval = setInterval(() => {
         const secondsDifference = differenceInSeconds(
           new Date(),
-          activeCycle.startDate,
+          // se o startDate for uma string, vai converter para data. Para resolver o problema do reducer cycles
+          // por o new Date em volta
+          new Date(activeCycle.startDate),
         )
 
         if (secondsDifference >= totalSeconds) {
