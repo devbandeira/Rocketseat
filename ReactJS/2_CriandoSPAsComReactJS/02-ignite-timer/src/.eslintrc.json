@@ -1,3 +1,8 @@
 {
-  "extends": "@rocketseat/eslint-config/react"
+  "extends": "@rocketseat/eslint-config/react",
+  "rules": {
+    // Para desabilitar o eslint do meu REDUCE enum export enum ActionTypes {
+    // ADD_NEW_CYCLE = 'ADD_NEW_CYCLE',
+    "no-unused-vars": "off"
+  }
 }
