@@ -39,35 +39,46 @@ export function CyclesContextProvider({
 }: CyclesContextProviderProps) {
   const [cyclesState, dispatch] = useReducer(
     (state: CyclesState, action: any) => {
-      if (action.type === 'ADD_NEW_CYCLE') {
-        return {
-          // To dizendo que meus cycles: são uma copia dos meus ...state.cycles que ja tenho no meu estado
-          // e adiciono um novo no final
-          ...state,
-          cycles: [...state.cycles, action.payload.newCycle],
-          // agora pegando o id do meu ciclo que criei anteriormente em newCycle e setando ele como ativo
-          activeCycleId: action.payload.newCycle.id,
-        }
-      }
+      switch (action.type) {
+        case 'ADD_NEW_CYCLE':
+          return {
+            // To dizendo que meus cycles: são uma copia dos meus ...state.cycles que ja tenho no meu estado
+            // e adiciono um novo no final
+            ...state,
+            cycles: [...state.cycles, action.payload.newCycle],
+            // agora pegando o id do meu ciclo que criei anteriormente em newCycle e setando ele como ativo
+            activeCycleId: action.payload.newCycle.id,
+          }
+        case 'INTERRUPT_CURRENT_CYCLE':
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, interruptedDate: new Date() }
+              } else {
+                return cycle
+              }
+            }),
 
-      if (action.type == 'INTERRUPT_CURRENT_CYCLE') {
-        return {
-          ...state,
-          cycles: state.cycles.map((cycle) => {
-            if (cycle.id === state.activeCycleId) {
-              return { ...cycle, interruptedDate: new Date() }
-            } else {
-              return cycle
-            }
-          }),
-          // cronometro volta para o estado zerado que é uma ação que acontece quando boto null no activeCycleId
-          activeCycleId: null,
-        }
+            activeCycleId: null,
+          }
+
+        case 'MARK_CURRENT_CYCLE_AS_FINISHED':
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, finishedDate: new Date() }
+              } else {
+                return cycle
+              }
+            }),
+            activeCycleId: null,
+          }
+        default:
+          return state
       }
-      return state
     },
-    // Aqui esta iniciando um [], mas como mudei a interface e estou dizendo que meu reduce recebe um objeto, devo passar um objeto para
-    // dizer como ele vai iniciar [] e null
     {
       cycles: [],
       activeCycleId: null,
@@ -75,42 +86,20 @@ export function CyclesContextProvider({
   )
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
-  // Posso buscar informações especificas dentro do meu cicleState
   const { cycles, activeCycleId } = cyclesState
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
-
-  // agora n preciso desse estado para controlar o id
-  // const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
 
   function setSecondsPassed(seconds: number) {
     setAmountSecondsPassed(seconds)
   }
 
   function markCurrentCycleAsFinished() {
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, finishedDate: new Date() }
-    //     } else {
-    //       return cycle
-    //     }
-    //   }),
-    // )
     dispatch({
       type: 'MARK_CURRENT_CYCLE_AS_FINISHED',
       payload: {
         activeCycleId,
       },
     })
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, finishedDate: new Date() }
-    //     } else {
-    //       return cycle
-    //     }
-    //   }),
-    // )
   }
 
   function createNewCycle(data: CreateCycleData) {
